@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+    .task-actions button {
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>📝 To-Do List</h2>
+  <input type="text" id="taskInput" placeholder="Enter new task..." />
+  <button onclick="addTask()">Add Task</button>
+  <ul id="taskList"></ul>
+</div>
+
+<script>
+  let tasks = [];
+
+  function renderTasks() {
+    const list = document.getElementById('taskList');
+    list.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+      const li = document.createElement('li');
+
+      const descSpan = document.createElement('span');
+      descSpan.textContent = task.description;
+      if (task.isCompleted) descSpan.classList.add('completed');
+
+      const actions = document.createElement('div');
+      actions.className = "task-actions";
+
+      const completeBtn = document.createElement('button');
+      completeBtn.textContent = "✔";
+      completeBtn.title = "Mark as completed";
+      completeBtn.onclick = () => {
+        task.isCompleted = true;
+        renderTasks();
+      };
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = "✎";
+      editBtn.title = "Edit task";
+      editBtn.onclick = () => {
+        const newDesc = prompt("Edit task:", task.description);
+        if (newDesc) {
+          task.description = newDesc;
+          renderTasks();
+        }
+      };
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = "🗑";
+      deleteBtn.title = "Delete task";
+      deleteBtn.onclick = () => {
+        tasks.splice(index, 1);
+        renderTasks();
+      };
+
+      actions.appendChild(completeBtn);
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+
+      li.appendChild(descSpan);
+      li.appendChild(actions);
+      list.appendChild(li);
+    });
+  }
+
+  function addTask() {
+    const input = document.getElementById('taskInput');
+    const desc = input.value.trim();
+    if (desc === "") {
+      alert("Please enter a task.");
+      return;
+    }
+
+    tasks.push({ description: desc, isCompleted: false });
+    input.value = "";
+    renderTasks();
+  }
+
+  // Initial render
+  renderTasks();
+</script>
+
+</body>
+</html>
